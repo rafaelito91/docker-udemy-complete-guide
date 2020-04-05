@@ -4,10 +4,28 @@ We intended to make a simple node project and run it on a docker container. So w
 
 ## Dockerfile
 
+The commands to run the project is:
+
+```
+docker build -t rafaelito/simpleweb .
+
+docker run -p 8080:8080 rafaelito/simpleweb
+
+docker exec -it <id_container> sh
+```
+
 The final version of the docker file is:
 
 ```
+FROM node:alpine
 
+WORKDIR /usr/app
+
+COPY ./package.json ./
+RUN npm install
+COPY ./ ./
+
+CMD ["npm", "start"]
 ```
 
 but to know how it came to be what it is (step by step), you need to keep reading this document
@@ -104,3 +122,22 @@ To have access to the container terminal, you can also run:
 
 > docker exec -lt **container_id** sh
 
+## Fifth version - Unnecessary Build 
+
+If you do any modification on a controller or any other files, the whole build step will run again. The problem with it is that node doesn't require the build step to be executed unless package.json was modified. So, in order to work around that we can separate the copy of package.json from the other files.
+
+
+```
+FROM node:alpine
+
+WORKDIR /usr/app
+
+COPY ./package.json ./
+RUN npm install
+COPY ./ ./
+
+CMD ["npm", "start"]
+
+```
+
+In this new version, the build step will not be executed again
