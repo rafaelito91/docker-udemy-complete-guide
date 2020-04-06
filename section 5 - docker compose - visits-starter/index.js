@@ -2,7 +2,10 @@ const express = require('express');
 const redis = require('redis');
 
 const app = express();
-const client = redis.createClient();
+const client = redis.createClient({
+  host: 'redis-server', // node has no idea what this is, it will only redirect
+  port: 6379            // to http://redis-server and docker will redirect to the container
+});
 client.set('visits', 0);
 
 app.get('/', (req, res) => {
