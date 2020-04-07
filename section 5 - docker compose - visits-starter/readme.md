@@ -61,3 +61,6 @@ Those policies means whether or not docker should try to restart containers when
 
 The third option has a tiny rule, if your exit error code returns zero, it will not try to restart the container. And that's because the exit error code 0 means the application was stopped due to a rule that does not mean a unknown error, it was on purpose. Any other code returned, 1 to 1000, will trigger container restart. And the last one is that the container can only be stopped by command line (?)
 
+## docker-compose ps
+
+It will show all containers running from your docker-compose file. So it needs to be run on the folder which contains your docker-compose.yml file, otherwise it will launch and error.
