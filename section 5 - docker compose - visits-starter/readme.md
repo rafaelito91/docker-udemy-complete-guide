@@ -2,7 +2,7 @@
 
 ## Introduction
 
-So.. what if I want to run 2 containers that will interact with each other, such as: nodeJs and redis. What can I do? Can I start both containers separately and have them interacting via HTTP? Absolutely. The problem is, the containers will not be able to "see one another", because they are working on different containers with different networks.
+So.. what if I want to run 2 containers that will interact with each other, such as: nodeJs and redis. What can I do? Can I start both containers separately and have them interacting via HTTP? Absolutely. The problem is, the applications will not be able to "see one another", because they are working on different containers with different networks.
 
 We can configure the network for them. In this case, they will be able to "see each other" and then work together. The problem is that to do so you have to deal with a bunch of configuration. ORRR use docker compose!
 
@@ -10,6 +10,7 @@ Docker-compose is a command that embeddeds a bunch o  configuration for running 
 
 ## docker-compose.yml
 
+```
 version: '3'
 services:
   redis-server:
@@ -18,6 +19,7 @@ services:
     build: .
     ports:
       - "4001:8081" 
+```
 
 In the docker compose above we can see a redis server being started and a nodeJs application (inside a container with Dockerfile) being started. "services" represent the containers, which have its names. Redis-server is the container resulted from the execution of redis image, and the node-app container is the result of the execution of the command build for the local folder location (represented by ".")
 
@@ -47,9 +49,13 @@ Stops all docker-compose running commands
 
 We added two lines to our nodeJs controller, which were
 
+```
 const process = require('process');
 
 process.exit(0);
+```
+
+![System and container port](images/node-controller-code.png)
 
 the second one stops the nodejs server with status error 0. Thats important. But firstly, lets talk about the restart policies existent:
 
