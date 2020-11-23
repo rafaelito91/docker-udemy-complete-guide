@@ -89,3 +89,50 @@ CMD ["redis-server"]
 ```
 
 Now we understand that for each line of command in a Dockerfile, a temporary container is created, the selected command is executed and it new state (commands + filesystem) is used to create a image that will be used as input to the next command, until the last command that will generate the file image for the Dockerfile.
+
+# Rebuilds with cache
+
+Let's say we change our Dockerfile to:
+
+```
+FROM alpine
+
+RUN apk add --update redis
+RUN apk add --update gcc
+
+CMD ["redis-server"]
+```
+
+We know that everty step we built before generated a temporary/intermediate image, right? So when we add a new command to the Dockerfile, all the commands' images gerenated before are maintained and only the images of the add file and further are generated again. This allow the docker build process to run faster, since it will only process commands when necessary. 
+
+```
+FROM alpine
+
+RUN apk add --update gcc
+RUN apk add --update redis
+
+CMD ["redis-server"]
+```
+
+The process is so strict that even when we change the order of the commands like above, since the filesystem was different the other time with redis already installed, this time it will download and install gcc again because the redis folder is missing.
+
+# Tagging an image
+
+Instead of using a default build command such as:
+
+> docker build .
+
+We can identify our build with a tag so we won't need to use a Docker generated id to the image, such as: fc60771eaa08. This way, it can go like:
+
+> docker build -t stephengrider/redis:latest
+
+And it can be run:
+
+> docker run stephengrider/redis:latest
+
+This helps us to run our images easier and also enables automations. This pattern of tag is described by:
+
+![](images/12.png)
+
+Most docker projects use this pattern.
+
