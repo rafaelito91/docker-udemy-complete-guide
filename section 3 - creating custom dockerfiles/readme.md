@@ -136,3 +136,8 @@ This helps us to run our images easier and also enables automations. This patter
 
 Most docker projects use this pattern.
 
+
+# Manual image generation with Docker Commit
+
+See the video. Rly, it's just for curiosity matters.
+

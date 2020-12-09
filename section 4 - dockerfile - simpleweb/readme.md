@@ -1,6 +1,8 @@
 # Dockerfile for simple node project
 
-We intended to make a simple node project and run it on a docker container. So we created a package.json and a index.js that would be executed inside the container. The problem is the Dockerfile:
+![](images/simpleweb.png)
+
+We intended to make a very simple node project (a project that displays a text on localhost:8080) and run it on a docker container. So we created a package.json and a index.js that would be executed inside the container. The problem is the Dockerfile:
 
 ## Dockerfile
 
@@ -48,6 +50,7 @@ It fails, because the alpine base image doesn't have npm installled.
 ## Second version - Node base image
 
 ```
+# Added an alpine version that contains node
 FROM node:alpine
 
 RUN npm install
