@@ -371,3 +371,39 @@ And then we're going to alter ou dockerfile to do the following:
 ![System and container port](images/mulit-step-build.png)
 
 Part of our dockerfile will use nodejs to create our build folder and the second part will install our nginx using it's image as a base. In order to all of this to work, the second part will copy the result of the first one. This way our build process will be able to use both base images.
+
+# Implementing multi-step
+
+```Dockerfile
+FROM node:alpine as builder #naming the whole block
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . . #no need for volumes, since no changes will be made
+RUN npm run build
+ 
+FROM nginx
+COPY --from=builder /app/build /usr/share/nginx/html #moving to nginx main folder
+
+#there's no need for a CMD to start nginx because its image already starts it as default
+```
+
+WARNING: AWS Doesn't accept naming. So the dockerfile should be:
+
+```Dockerfile
+FROM node:alpine
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run build
+ 
+FROM nginx
+COPY --from=0 /app/build /usr/share/nginx/html
+```
+
+# Running nginx
+
+> docker build .
+
+> docker run -p 8080:80 container_id
